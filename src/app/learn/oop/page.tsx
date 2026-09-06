@@ -3,33 +3,27 @@
 import Link from "next/link";
 import { useState } from "react";
 import ConceptShell from "@/components/learning/ConceptShell";
+import AnimatedObject from "@/components/learning/AnimatedObject";
 
 const ideas = [
   { id: "encapsulation", title: "Encapsulation", copy: "Bundle data and the methods that operate on it inside one object, keeping internal details hidden." },
   { id: "abstraction", title: "Abstraction", copy: "Focus the model on the attributes and behaviours that matter while hiding unnecessary complexity." },
   { id: "inheritance", title: "Inheritance", copy: "Let a class inherit properties and behaviours from a base class so related types can reuse structure." },
   { id: "polymorphism", title: "Polymorphism", copy: "Treat different related classes through a common abstraction while allowing each class to provide its own behaviour." },
-];
+] as const;
 
 export default function OopPage() {
-  const [active, setActive] = useState("encapsulation");
+  const [active, setActive] = useState<(typeof ideas)[number]["id"]>("encapsulation");
   const item = ideas.find((idea) => idea.id === active)!;
 
   return (
     <ConceptShell number="03" kicker="Object-oriented programming" title="Think in objects, state and behaviour." intro="OOP revolves around objects and models real-world entities and their interactions. Explore the four ideas as one connected mental model.">
       <section className="lesson-section" id="visual">
         <div className="lesson-kicker">Visual model</div>
-        <h2>One object can hold both state and behaviour.</h2>
+        <h2>Watch the same object change as the idea changes.</h2>
         <div className="oop-scene">
-          <div className="object-card">
-            <div className="object-cap">OBJECT</div>
-            <div className="object-name">BankAccount</div>
-            <div className="object-divider" />
-            <div className="object-list"><span>balance</span><span>owner</span><span>accountNo</span></div>
-            <div className="object-divider" />
-            <div className="object-list"><span>deposit()</span><span>withdraw()</span><span>getBalance()</span></div>
-          </div>
-          <div className="object-caption">Data + behaviour, kept together.</div>
+          <AnimatedObject active={active} />
+          <div className="object-caption">Data + behaviour, kept together and re-modelled through OOP ideas.</div>
         </div>
       </section>
 
@@ -52,7 +46,13 @@ export default function OopPage() {
       <section className="lesson-section" id="code">
         <div className="lesson-kicker">Code connection</div>
         <h2>Turn the model into a class.</h2>
-        <pre className="code-block"><code>{`class BankAccount {\n  private double balance;\n\n  void deposit(double amount) {\n    balance += amount;\n  }\n}`}</code></pre>
+        <pre className="code-block"><code>{`class BankAccount {
+  private double balance;
+
+  void deposit(double amount) {
+    balance += amount;
+  }
+}`}</code></pre>
       </section>
 
       <section className="lesson-section" id="recall">
