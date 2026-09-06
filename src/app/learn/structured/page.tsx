@@ -1,50 +1,28 @@
-"use client";
-
 import Link from "next/link";
 import ConceptShell from "@/components/learning/ConceptShell";
 import ExecutionFlow from "@/components/learning/ExecutionFlow";
+import FlowMachine from "@/components/learning/FlowMachine";
+import ExecutionCode from "@/components/learning/ExecutionCode";
 
-const flows = {
-  sequence: { title: "Sequence", copy: "Statements execute in order — one after another.", steps: ["Start", "Read input", "Process", "Show result", "End"] },
-  selection: { title: "Selection", copy: "A condition decides which path the program follows.", steps: ["Start", "Condition", "Choose path", "Execute branch", "End"] },
-  repetition: { title: "Repetition", copy: "A block repeats while its condition keeps the flow alive.", steps: ["Start", "Check condition", "Run block", "Return to condition", "End"] },
-};
-
-type FlowKey = keyof typeof flows;
+const code = [
+  "int marks = 72;",
+  "String result;",
+  "if (marks >= 50) {",
+  "  result = \"Pass\";",
+  "} else {",
+  "  result = \"Try again\";",
+  "}",
+  "System.out.println(result);",
+];
 
 export default function StructuredPage() {
   return (
-    <ConceptShell
-      number="02"
-      kicker="Structured programming"
-      title="Make the flow visible."
-      intro="Structured programming organizes execution around sequence, selection and repetition so the logic becomes easier to follow and maintain. Trace the flow instead of memorising the names."
-    >
-      {(Object.keys(flows) as FlowKey[]).map((key) => (
-        <section className="lesson-section" id={key === "sequence" ? "visual" : undefined} key={key}>
-          <div className="lesson-kicker">{flows[key].title}</div>
-          <h2>{flows[key].copy}</h2>
-          <div className="visual-card">
-            <div className="visual-header"><span>EXECUTION TRACE</span><span>{flows[key].title.toUpperCase()}</span></div>
-            <ExecutionFlow steps={flows[key].steps} />
-          </div>
-        </section>
-      ))}
-
-      <section className="lesson-section" id="code">
-        <div className="lesson-kicker">Code connection</div>
-        <h2>Control structures are the shape of the program.</h2>
-        <pre className="code-block"><code>{`if (marks >= 50) {\n  result = "Pass";\n} else {\n  result = "Try again";\n}`}</code></pre>
-      </section>
-
-      <section className="lesson-section" id="recall">
-        <div className="lesson-kicker">Recall</div>
-        <div className="card recall-card">
-          <h3>Remember the three shapes.</h3>
-          <p>Sequence moves forward. Selection chooses a path. Repetition returns to a condition and repeats a block.</p>
-          <Link className="button primary" href="/learn">Back to learning map</Link>
-        </div>
-      </section>
+    <ConceptShell number="02" kicker="Structured programming" title="Make the flow visible." intro="Structured programming organizes code around logical control structures. Trace sequence, selection and repetition as execution rather than memorised labels.">
+      <section className="lesson-section" id="visual"><div className="lesson-kicker">Sequence</div><h2>Execution moves forward, one step at a time.</h2><div className="visual-card"><ExecutionFlow steps={[{ label:"Start", detail:"The program begins." },{ label:"Input", detail:"Read the required value." },{ label:"Process", detail:"Perform the operation." },{ label:"Output", detail:"Present the result." },{ label:"End", detail:"Execution finishes." }]} /></div></section>
+      <section className="lesson-section" id="mechanism"><div className="lesson-kicker">Selection</div><h2>One condition. Two possible paths.</h2><div className="visual-card"><FlowMachine /></div></section>
+      <section className="lesson-section"><div className="lesson-kicker">Repetition</div><h2>A loop is a controlled return.</h2><div className="visual-card"><ExecutionFlow loopTo={1} interval={720} steps={[{ label:"Start", detail:"Enter the repetition structure." },{ label:"Check condition", detail:"The condition decides whether the block runs." },{ label:"Run block", detail:"Perform the repeated statements." },{ label:"Return", detail:"Go back to the condition." },{ label:"End", detail:"Stop when the condition no longer keeps the loop alive." }]} /></div></section>
+      <section className="lesson-section" id="code"><div className="lesson-kicker">Code connection</div><h2>Now watch the same logic inside Java.</h2><ExecutionCode code={code} steps={[{line:1,label:"State",detail:"marks starts at 72."},{line:2,label:"Variable",detail:"result is ready for the branch outcome."},{line:3,label:"Decision",detail:"The program evaluates whether marks is at least 50."},{line:4,label:"True path",detail:"72 satisfies the condition, so the pass branch executes."},{line:8,label:"Output",detail:"The program prints the result."}]} /></section>
+      <section className="lesson-section" id="recall"><div className="card recall-card"><div className="lesson-kicker">Recall</div><h3>Three shapes. One mental model.</h3><p>Sequence moves forward. Selection chooses a path. Repetition returns to a condition and repeats a block. Structured programming makes that control flow explicit and organized.</p><Link className="button primary" href="/learn">Continue</Link></div></section>
     </ConceptShell>
   );
 }
