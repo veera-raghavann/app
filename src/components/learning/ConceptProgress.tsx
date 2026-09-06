@@ -11,7 +11,6 @@ export default function ConceptProgress() {
     const update = () => {
       const scrollable = document.documentElement.scrollHeight - window.innerHeight;
       setProgress(scrollable > 0 ? Math.min(100, Math.max(0, (window.scrollY / scrollable) * 100)) : 0);
-
       let closest = "intuition";
       let best = Number.POSITIVE_INFINITY;
       for (const section of learningSections) {
@@ -25,7 +24,6 @@ export default function ConceptProgress() {
       }
       setActive(closest);
     };
-
     update();
     window.addEventListener("scroll", update, { passive: true });
     window.addEventListener("resize", update);
