@@ -3,12 +3,12 @@
 import { useState } from "react";
 
 const concepts = [
-  ["01", "Programming Paradigms", "See how different ways of thinking about programs relate to one another."],
-  ["02", "Structured Programming", "Turn sequence, selection and repetition into a living execution flow."],
-  ["03", "Object-Oriented Programming", "Meet objects, classes, abstraction, encapsulation, inheritance and polymorphism visually."],
-  ["04", "Subroutines", "Zoom into modular programs and understand how complexity gets hidden behind a call."],
-  ["05", "Object Serialization", "Watch an object become a byte stream, travel, and come back to life."],
-  ["06", "Parallel Computing", "Split work across processors and see speed, scale and overhead emerge."],
+  ["01", "Programming Paradigms", "See how different ways of thinking about programs relate to one another.", "/learn/paradigms"],
+  ["02", "Structured Programming", "Turn sequence, selection and repetition into a living execution flow.", "/learn/structured"],
+  ["03", "Object-Oriented Programming", "Meet objects, classes, abstraction, encapsulation, inheritance and polymorphism visually.", "/learn/oop"],
+  ["04", "Subroutines", "Zoom into modular programs and understand how complexity gets hidden behind a call.", "/learn/subroutines"],
+  ["05", "Object Serialization", "Watch an object become a byte stream, travel, and come back to life.", "/learn/serialization"],
+  ["06", "Parallel Computing", "Split work across processors and see speed, scale and overhead emerge.", "/learn/parallel"],
 ];
 
 export default function Home() {
@@ -101,12 +101,21 @@ export default function Home() {
             <h2>Start with the concepts that usually feel abstract.</h2>
           </div>
           <div className="cards">
-            {concepts.map(([num, title, body]) => (
-              <article className="card" key={num}>
+            {concepts.map(([num, title, body, href]) => (
+              <a
+                className="card"
+                key={num}
+                href={href}
+                aria-label={`Open ${title} lesson`}
+                style={{ display: "block", textDecoration: "none", color: "inherit", cursor: "pointer" }}
+              >
                 <div className="card-num">{num}</div>
                 <h3>{title}</h3>
                 <p>{body}</p>
-              </article>
+                <div style={{ marginTop: 20, fontSize: 13, fontWeight: 700, color: "var(--accent)" }}>
+                  Open concept →
+                </div>
+              </a>
             ))}
           </div>
         </div>
