@@ -2,33 +2,72 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
+import { motion } from "motion/react";
+import ConceptShell from "@/components/learning/ConceptShell";
+import ParticleFlow from "@/components/learning/ParticleFlow";
 
 export default function ParallelPage() {
   const [cores, setCores] = useState(4);
   const [tasks, setTasks] = useState(8);
   const [running, setRunning] = useState(false);
   const lanes = useMemo(() => Array.from({ length: cores }, (_, i) => i), [cores]);
+  const perLane = Math.ceil(tasks / cores);
 
   return (
-    <main className="shell">
-      <header className="nav"><div className="container nav-inner"><Link className="brand" href="/">APP<span style={{ color: "var(--accent)" }}>.</span></Link><div className="nav-links"><Link href="/learn">Learning map</Link><span>07 / Parallel</span></div><span className="eyebrow"><span className="dot" /> Playground</span></div></header>
-      <section className="section" style={{ paddingTop: 90 }}>
-        <div className="container">
-          <div className="section-head"><div className="section-kicker">Parallel computing</div><h1 style={{ margin: "12px 0 18px", fontSize: "clamp(58px, 9vw, 108px)", lineHeight: .88, letterSpacing: "-.075em" }}>Split the work.</h1><p>Parallel computing breaks a larger job into subtasks that can execute concurrently on multiple processors, cores or computers. Change the number of cores and see the model.</p></div>
-          <div style={{ display: "grid", gridTemplateColumns: "280px minmax(0,1fr)", gap: 14 }}>
-            <div className="card">
-              <div className="card-num">CONTROLS</div>
-              <label style={{ display: "block", marginTop: 30, fontSize: 13 }}>Tasks · {tasks}</label>
-              <input type="range" min="4" max="16" value={tasks} onChange={(e) => setTasks(Number(e.target.value))} style={{ width: "100%", marginTop: 12 }} />
-              <label style={{ display: "block", marginTop: 28, fontSize: 13 }}>Cores · {cores}</label>
-              <input type="range" min="1" max="8" value={cores} onChange={(e) => setCores(Number(e.target.value))} style={{ width: "100%", marginTop: 12 }} />
-              <button className="button primary" style={{ width: "100%", marginTop: 30 }} onClick={() => setRunning(!running)}>{running ? "Pause simulation" : "Run simulation"}</button>
+    <ConceptShell number="06" kicker="Parallel computing" title="Split the work. Watch the system breathe." intro="Parallel computing breaks a larger task into smaller subtasks and executes them concurrently. Change the workload and processor count, then watch the distribution change. Available models include shared memory, distributed memory, SIMD, MIMD, task and data parallelism.">
+      <section className="lesson-section" id="visual">
+        <div className="lesson-kicker">Visual model</div>
+        <h2>One job. Many processing lanes.</h2>
+        <div className="visual-card">
+          <div className="visual-header"><span>WORK DISTRIBUTION</span><span>{cores} CORES · {tasks} TASKS</span></div>
+          <div className="parallel-stage">
+            <ParticleFlow running={running} count={tasks} lanes={cores} />
+            <div className="parallel-lanes">
+              {lanes.map((lane) => (
+                <div className="parallel-lane" key={lane}>
+                  <span>CORE {lane + 1}</span>
+                  <div className="parallel-track">
+                    {Array.from({ length: perLane }, (_, j) => {
+                      const task = lane + j * cores;
+                      if (task >= tasks) return null;
+                      return <motion.div key={task} className="parallel-task" animate={running ? { x: [0, 5, 0] } : { x: 0 }} transition={{ duration: .8, repeat: running ? Infinity : 0, delay: j * .05 }}>{String(task + 1).padStart(2, "0")}</motion.div>;
+                    })}
+                  </div>
+                </div>
+              ))}
             </div>
-            <div className="visual-card"><div className="visual-header"><span>WORK DISTRIBUTION</span><span>{cores} CORES · {tasks} TASKS</span></div><div style={{ padding: "34px 4px" }}>{lanes.map((lane) => <div key={lane} style={{ display: "grid", gridTemplateColumns: "70px 1fr", gap: 14, alignItems: "center", marginBottom: 13 }}><span style={{ color: "var(--muted)", fontSize: 12 }}>CORE {lane + 1}</span><div style={{ height: 30, borderRadius: 10, border: "1px solid var(--line)", background: "rgba(255,255,255,.7)", overflow: "hidden", position: "relative" }}>{Array.from({ length: Math.ceil(tasks / cores) }, (_, j) => <span key={j} style={{ position: "absolute", left: `${(j / Math.ceil(tasks / cores)) * 100}%`, width: `${(1 / Math.ceil(tasks / cores)) * 100 - 2}%`, top: 3, bottom: 3, borderRadius: 7, background: running ? "rgba(110,92,255,.20)" : "rgba(18,18,18,.08)", transition: "background .2s" }} />)}</div></div>)}</div><div style={{ color: "var(--muted)", fontSize: 13, lineHeight: 1.6 }}>The material distinguishes shared-memory and distributed-memory approaches, and also introduces SIMD, MIMD, task parallelism and data parallelism.</div></div>
+          </div>
+          <div className="actions" style={{ justifyContent: "center" }}>
+            <button className="button primary" onClick={() => setRunning((value) => !value)}>{running ? "Pause simulation" : "Run simulation"}</button>
           </div>
         </div>
       </section>
-      <footer className="footer"><div className="container"><Link href="/learn">← Back to learning map</Link></div></footer>
-    </main>
+
+      <section className="lesson-section" id="mechanism">
+        <div className="lesson-kicker">Mechanism</div>
+        <h2>Change the shape of the computation.</h2>
+        <div className="playground-grid">
+          <div className="card">
+            <div className="card-num">EXPERIMENT</div>
+            <label className="field"><span>Tasks · {tasks}</span><input type="range" min="4" max="16" value={tasks} onChange={(e) => setTasks(Number(e.target.value))} /></label>
+            <label className="field" style={{ marginTop: 20 }}><span>Cores · {cores}</span><input type="range" min="1" max="8" value={cores} onChange={(e) => setCores(Number(e.target.value))} /></label>
+          </div>
+          <div className="idea-grid" style={{ marginTop: 0 }}>
+            {["Shared memory", "Distributed memory", "SIMD", "MIMD"].map((item, i) => <div className="idea-card selected" key={item}><span>MODEL 0{i + 1}</span><strong>{item}</strong><p>{i === 0 ? "Multiple processors or cores share a common memory space." : i === 1 ? "Processors operate with their own memory and communicate through message passing." : i === 2 ? "One instruction operates on multiple data elements at once." : "Different processors or cores execute different instructions on different data."}</p></div>)}
+          </div>
+        </div>
+      </section>
+
+      <section className="lesson-section" id="code">
+        <div className="lesson-kicker">Code connection</div>
+        <h2>Parallelism is a strategy, not a magic speed button.</h2>
+        <pre className="code-block"><code>{`// Conceptual model\nfor each task in tasks:\n    assign task to an available processing unit\n\nwait for all workers\ncombine the results`}</code></pre>
+      </section>
+
+      <section className="lesson-section" id="recall">
+        <div className="lesson-kicker">Recall</div>
+        <div className="card recall-card"><h3>What makes parallelism useful?</h3><p>Independent work can be distributed so multiple processing units operate at the same time. The material also highlights trade-offs such as load balancing, data dependencies, communication overhead and synchronization.</p><Link className="button primary" href="/learn">Back to learning map</Link></div>
+      </section>
+    </ConceptShell>
   );
 }
