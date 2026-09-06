@@ -3,6 +3,7 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
 import ProgressRail from "@/components/learning/ProgressRail";
+import ConceptProgress from "@/components/learning/ConceptProgress";
 
 export default function ConceptShell({
   number,
@@ -19,6 +20,7 @@ export default function ConceptShell({
 }) {
   return (
     <main className="shell">
+      <ConceptProgress />
       <header className="nav">
         <div className="container nav-inner">
           <Link className="brand" href="/">APP<span style={{ color: "var(--accent)" }}>.</span></Link>
